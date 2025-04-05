@@ -1,6 +1,9 @@
 {
-    "name": "my-v0-project",
+    "name": "smp-planet-website",
+    "license": "MIT",
+    "author": "art3m4ik3",
     "version": "0.1.0",
+    "description": "SMP Planet Website",
     "private": true,
     "scripts": {
         "dev": "next dev",

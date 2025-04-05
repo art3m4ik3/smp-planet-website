@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, DiscIcon as Discord } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,57 @@ import Footer from "@/components/footer";
 
 export default function RulesPage() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+    return (
+        <Suspense
+            fallback={
+                <div className="flex flex-col min-h-screen bg-[#1e2030] text-gray-200">
+                    <header className="py-6 bg-[#27293b] border-b border-[#3a3d52]">
+                        <div className="container px-4 md:px-6">
+                            <Link href="/" className="flex items-center gap-2">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="rounded-full"
+                                >
+                                    <ArrowLeft className="h-5 w-5" />
+                                </Button>
+                                <span className="text-xl font-bold text-white">
+                                    SMP Planet
+                                </span>
+                            </Link>
+                        </div>
+                    </header>
+                    <main className="flex-1 py-20">
+                        <div className="container px-4 md:px-6">
+                            <p className="text-center text-gray-300">
+                                Loading...
+                            </p>
+                        </div>
+                    </main>
+                    <Footer />
+                </div>
+            }
+        >
+            <RulesContent
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
+            />
+        </Suspense>
+    );
+}
+
+function RulesContent({
+    activeCategory,
+    setActiveCategory,
+}: {
+    activeCategory: string | null;
+    setActiveCategory: React.Dispatch<React.SetStateAction<string | null>>;
+}) {
     const searchParams = useSearchParams();
 
     useEffect(() => {
+        if (!searchParams) return;
         const category = searchParams.get("category");
         if (category) {
             setActiveCategory(category);
@@ -40,6 +88,35 @@ export default function RulesPage() {
             },
         },
     };
+
+    if (!searchParams) {
+        return (
+            <div className="flex flex-col min-h-screen bg-[#1e2030] text-gray-200">
+                <header className="py-6 bg-[#27293b] border-b border-[#3a3d52]">
+                    <div className="container px-4 md:px-6">
+                        <Link href="/" className="flex items-center gap-2">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full"
+                            >
+                                <ArrowLeft className="h-5 w-5" />
+                            </Button>
+                            <span className="text-xl font-bold text-white">
+                                SMP Planet
+                            </span>
+                        </Link>
+                    </div>
+                </header>
+                <main className="flex-1 py-20">
+                    <div className="container px-4 md:px-6">
+                        <p className="text-center text-gray-300">Loading...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col min-h-screen bg-[#1e2030] text-gray-200">
