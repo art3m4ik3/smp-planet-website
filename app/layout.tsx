@@ -20,6 +20,7 @@ export default function RootLayout({
     return (
         <html lang="ru" suppressHydrationWarning>
             <Head>
+                <meta name="robots" content="all" />
                 <link rel="icon" href="/icon.ico" sizes="any"></link>
                 <link rel="favicon" href="/icon.ico" sizes="any"></link>
             </Head>

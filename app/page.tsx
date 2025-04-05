@@ -196,7 +196,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#1e2030]"></div>
                     <div className="absolute inset-0 bg-[#1e2030]/70"></div>
                     <img
-                        src="/images/main.png"
+                        src="/images/main.webp"
                         alt="Minecraft Главная"
                         className="w-full h-full object-cover"
                     />
@@ -505,7 +505,7 @@ export default function Home() {
                             variants={fadeIn}
                         >
                             <img
-                                src="/images/builds.png"
+                                src="/images/builds.webp"
                                 alt="Скриншот сервера"
                                 className="w-full h-full object-cover"
                                 loading="lazy"
