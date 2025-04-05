@@ -763,7 +763,7 @@ export default function Home() {
                                 rel="noopener noreferrer"
                             >
                                 <Discord className="mr-2 h-4 w-4" />{" "}
-                                Присоединиться к нашему Discord сообществу
+                                Присоединиться к Discord
                             </a>
                         </Button>
                     </motion.div>
