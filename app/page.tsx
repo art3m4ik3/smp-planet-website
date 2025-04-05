@@ -508,6 +508,7 @@ export default function Home() {
                                 src="/images/builds.png"
                                 alt="Скриншот сервера"
                                 className="w-full h-full object-cover"
+                                loading="lazy"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#1e2030]/80 to-transparent"></div>
                             <div className="absolute bottom-6 left-6 right-6">
@@ -725,6 +726,7 @@ export default function Home() {
                                 variants={fadeIn}
                             >
                                 <img
+                                    loading="lazy"
                                     src={post.image}
                                     alt={post.title}
                                     className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-110"
