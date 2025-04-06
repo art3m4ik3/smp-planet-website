@@ -6,11 +6,36 @@ import { ArrowLeft, DiscIcon as Discord } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { rulesData } from "@/lib/rules-data";
 import Footer from "@/components/footer";
+import { Category } from "@/lib/rules-data";
 
 export default function RulesPage() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [rules, setRules] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        fetch("/api/rules")
+            .then((response) => response.json())
+            .then((data) => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    setError(
+                        "Не удалось загрузить правила. Пожалуйста, попробуйте позже."
+                    );
+                    return;
+                }
+                setRules(data);
+                setActiveCategory(data[0].id);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch rules:", error);
+                setError("Произошла ошибка при загрузке правил.");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
     return (
         <Suspense
@@ -46,6 +71,9 @@ export default function RulesPage() {
             <RulesContent
                 activeCategory={activeCategory}
                 setActiveCategory={setActiveCategory}
+                rules={rules}
+                loading={loading}
+                error={error}
             />
         </Suspense>
     );
@@ -54,9 +82,15 @@ export default function RulesPage() {
 function RulesContent({
     activeCategory,
     setActiveCategory,
+    rules,
+    loading,
+    error,
 }: {
     activeCategory: string | null;
     setActiveCategory: React.Dispatch<React.SetStateAction<string | null>>;
+    rules: Category[];
+    loading: boolean;
+    error: string | null;
 }) {
     const searchParams = useSearchParams();
 
@@ -65,16 +99,13 @@ function RulesContent({
         const category = searchParams.get("category");
         if (category) {
             setActiveCategory(category);
-        } else if (rulesData.length > 0) {
-            setActiveCategory(rulesData[0].id);
         }
     }, [searchParams]);
 
     const fadeIn = {
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            y: 0,
             transition: { duration: 0.6 },
         },
     };
@@ -89,7 +120,7 @@ function RulesContent({
         },
     };
 
-    if (!searchParams) {
+    if (loading) {
         return (
             <div className="flex flex-col min-h-screen bg-[#1e2030] text-gray-200">
                 <header className="py-6 bg-[#27293b] border-b border-[#3a3d52]">
@@ -111,6 +142,35 @@ function RulesContent({
                 <main className="flex-1 py-20">
                     <div className="container px-4 md:px-6">
                         <p className="text-center text-gray-300">Loading...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col min-h-screen bg-[#1e2030] text-gray-200">
+                <header className="py-6 bg-[#27293b] border-b border-[#3a3d52]">
+                    <div className="container px-4 md:px-6">
+                        <Link href="/" className="flex items-center gap-2">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full"
+                            >
+                                <ArrowLeft className="h-5 w-5" />
+                            </Button>
+                            <span className="text-xl font-bold text-white">
+                                SMP Planet
+                            </span>
+                        </Link>
+                    </div>
+                </header>
+                <main className="flex-1 py-20">
+                    <div className="container px-4 md:px-6">
+                        <p className="text-center text-red-400">{error}</p>
                     </div>
                 </main>
                 <Footer />
@@ -164,7 +224,7 @@ function RulesContent({
                         variants={fadeIn}
                     >
                         <div className="flex space-x-2 min-w-max pb-2">
-                            {rulesData.map((category) => (
+                            {rules.map((category) => (
                                 <button
                                     key={category.id}
                                     onClick={() =>
@@ -189,7 +249,7 @@ function RulesContent({
                         variants={staggerContainer}
                     >
                         {activeCategory &&
-                            rulesData
+                            rules
                                 .find((c) => c.id === activeCategory)
                                 ?.rules.map((rule) => (
                                     <motion.div
@@ -198,9 +258,12 @@ function RulesContent({
                                         variants={fadeIn}
                                     >
                                         <h3 className="text-xl font-bold text-white mb-3">
+                                            <span className="text-gray-400 mr-2">
+                                                {rule.index}
+                                            </span>
                                             {rule.title}
                                         </h3>
-                                        <p className="text-gray-300">
+                                        <p className="text-gray-300 whitespace-pre-line">
                                             {rule.description}
                                         </p>
                                     </motion.div>
