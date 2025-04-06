@@ -59,14 +59,14 @@ export default function Home() {
                 .trim();
         };
 
-        fetch("/api/version-info")
+        fetch("https://api.smp-planet.fun/api/version-info")
             .then((response) => response.json())
             .then((data) => setLauncherInfo(data))
             .catch((error) =>
                 console.error("Failed to fetch launcher info:", error)
             );
 
-        fetch("/api/get_list_mods")
+        fetch("https://api.smp-planet.fun/api/get_list_mods")
             .then((response) => response.json())
             .then((data: ModInfo[]) => {
                 const formattedMods = data

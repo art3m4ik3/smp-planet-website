@@ -16,7 +16,7 @@ export default function RulesPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch("/api/rules")
+        fetch("https://api.smp-planet.fun/api/rules")
             .then((response) => response.json())
             .then((data) => {
                 if (!Array.isArray(data) || data.length === 0) {
